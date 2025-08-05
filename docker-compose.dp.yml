@@ -5,7 +5,7 @@ x-base-config: &base-config
     args:
       BUNDLE_WITHOUT: ''
       EXECJS_RUNTIME: 'Node'
-      RAILS_ENV: 'production'
+      RAILS_ENV: 'development'
       RAILS_SERVE_STATIC_FILES: 'true'
   volumes:
     - ./:/app:delegated
