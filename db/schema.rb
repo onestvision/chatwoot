@@ -10,11 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_22_152516) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_06_232527) do
   # These extensions should be enabled to support this database
-  enable_extension "pg_stat_statements"
-  enable_extension "pg_trgm"
-  enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "vector"
 
@@ -237,7 +234,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_22_152516) do
     t.jsonb "audience", default: []
     t.datetime "scheduled_at", precision: nil
     t.boolean "trigger_only_during_business_hours", default: false
-    t.jsonb "template_params"
+    t.jsonb "template_params", default: {}, null: false
     t.index ["account_id"], name: "index_campaigns_on_account_id"
     t.index ["campaign_status"], name: "index_campaigns_on_campaign_status"
     t.index ["campaign_type"], name: "index_campaigns_on_campaign_type"
@@ -547,7 +544,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_22_152516) do
     t.index ["blocked"], name: "index_contacts_on_blocked"
     t.index ["email", "account_id"], name: "uniq_email_per_account_contact", unique: true
     t.index ["identifier", "account_id"], name: "uniq_identifier_per_account_contact", unique: true
-    t.index ["name", "email", "phone_number", "identifier"], name: "index_contacts_on_name_email_phone_number_identifier", opclass: :gin_trgm_ops, using: :gin
     t.index ["phone_number", "account_id"], name: "index_contacts_on_phone_number_and_account_id"
   end
 
@@ -849,7 +845,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_22_152516) do
     t.index ["account_id", "created_at", "message_type"], name: "index_messages_on_account_created_type"
     t.index ["account_id", "inbox_id"], name: "index_messages_on_account_id_and_inbox_id"
     t.index ["account_id"], name: "index_messages_on_account_id"
-    t.index ["content"], name: "index_messages_on_content", opclass: :gin_trgm_ops, using: :gin
     t.index ["conversation_id", "account_id", "message_type", "created_at"], name: "index_messages_on_conversation_account_type_created"
     t.index ["conversation_id"], name: "index_messages_on_conversation_id"
     t.index ["created_at"], name: "index_messages_on_created_at"
@@ -1039,7 +1034,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_22_152516) do
   create_table "tags", id: :serial, force: :cascade do |t|
     t.string "name"
     t.integer "taggings_count", default: 0
-    t.index "lower((name)::text) gin_trgm_ops", name: "tags_name_trgm_idx", using: :gin
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
